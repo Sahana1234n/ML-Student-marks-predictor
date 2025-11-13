@@ -21,34 +21,35 @@ def save_object(file_path , obj):
     except Exception as e:
         raise CustomException(e,sys)        
     
-def evaluate_models(X_train , y_train , X_test , y_test, models , param_grid):
+def evaluate_models(X_train, y_train, X_test, y_test, models, param_grid):
     try:
         report = {}
 
         for model_name, model in models.items():
-            params = param_grid.get(model_name, {})  # Get hyperparameters for this model
+            print(f"\n🔍 Evaluating: {model_name}")
+            params = param_grid.get(model_name, {})
 
             gs = GridSearchCV(model, params, cv=3, scoring='r2', n_jobs=-1)
             gs.fit(X_train, y_train)
 
             best_model = gs.best_estimator_
 
-            model.set_params(**gs.best_params_)
-            model.fit(X_train , y_train)
+            y_train_pred = best_model.predict(X_train)
+            y_test_pred = best_model.predict(X_test)
 
-            y_train_pred = model.predict(X_train)
+            train_score = r2_score(y_train, y_train_pred)
+            test_score = r2_score(y_test, y_test_pred)
 
-            y_test_pred = model.predict(X_test)
+            print(f" {model_name}  Train R2: {train_score:.4f} | Test R2: {test_score:.4f}")
+            print(f"Best Params: {gs.best_params_}")
 
-            train_model_score = r2_score(y_train , y_train_pred)
-            test_model_score = r2_score(y_test , y_test_pred)
-
-            report[model_name] = test_model_score
-
+            report[model_name] = test_score
 
         return report
+
     except Exception as e:
-        raise CustomException(e,sys)
+        raise CustomException(e, sys)
+
     
 
 def load_object(file_path):
