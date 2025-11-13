@@ -31,18 +31,24 @@
             border: none;
             padding: 10px 20px;
             cursor: pointer;
+            color: white;
+            font-weight: bold;
         }
 
         h1, label, h2 {
             color: white;
+        }
+
+        h2 {
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="login">
         <h1>Student Exam Performance Indicator</h1>
-        <form action="{{ url_for('predict_datapoint') }}" method="post">
-            
+        <form action="/" method="post">
             <label>Gender</label>
             <select class="form-control" name="gender" required>
                 <option value="">Select Gender</option>
@@ -93,7 +99,7 @@
             <input class="form-control" type="number" name="writing_score" min="0" max="100"
                    value="{{ request.form.writing_score }}" required>
 
-            <input type="submit" class="btn btn-primary" value="Predict your Maths Score">
+            <input type="submit" class="btn-primary" value="Predict your Maths Score">
         </form>
 
         {% if results %}
